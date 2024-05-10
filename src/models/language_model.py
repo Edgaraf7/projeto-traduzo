@@ -3,6 +3,7 @@
 from .abstract_model import AbstractModel
 from ..database.db import languages_collection
 
+
 class LanguageModel(AbstractModel):
     # Definindo a coleção "languages"
     _collection = languages_collection
@@ -27,4 +28,5 @@ class LanguageModel(AbstractModel):
         apenas com os campos 'name' e 'acronym'.
         """
         languages = cls._collection.find()
-        return [{"name": language["name"], "acronym": language["acronym"]} for language in languages]
+        return [{"name": language["name"], "acronym":
+                 language["acronym"]} for language in languages]
