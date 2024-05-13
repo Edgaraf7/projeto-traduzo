@@ -57,19 +57,21 @@ def reverse_translation():
     translate_from = request.form['translate-from']
     translate_to = request.form['translate-to']
 
-    # Invertendo os idiomas
-    translator = GoogleTranslator(source=translate_to, target=translate_from)
+    translator = GoogleTranslator(source=translate_from, target=translate_to)
     translated_text = translator.translate(text_to_translate)
 
-    # Invertendo os textos original e traduzido
-    text_to_translate, translated_text = translated_text, text_to_translate
+    original_text = text_to_translate
+    text_to_translate = translated_text
+    translated_text = original_text
+
+    translate_from, translate_to = translate_to, translate_from
 
     return render_template(
         "index.html",
         languages=LanguageModel.list_dicts(),
         text_to_translate=text_to_translate,
-        translate_from=translate_to,  # Agora é o idioma de origem invertido
-        translate_to=translate_from,  # Agora é o idioma de destino invertido
+        translate_from=translate_from,
+        translate_to=translate_to,
         translated=translated_text
     )
 
