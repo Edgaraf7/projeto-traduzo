@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request,  render_template
 from controllers.admin_controller import admin_controller
 from src.models.language_model import LanguageModel
 from deep_translator import GoogleTranslator
