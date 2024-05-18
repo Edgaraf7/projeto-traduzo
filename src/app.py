@@ -1,16 +1,12 @@
-# app.py
-
 from asyncio import start_server
 from datetime import datetime
 from flask import Flask, request, render_template
 from controllers.admin_controller import admin_controller
-from controllers.history_controller import history_controller  # Import the new controller
+from controllers.history_controller import history_controller
 from models.history_model import HistoryModel
 from src.models.language_model import LanguageModel
 from deep_translator import GoogleTranslator
 
-from os import environ
-from waitress import serve
 
 app = Flask(__name__)
 app.template_folder = "views/templates"
@@ -18,6 +14,7 @@ app.static_folder = "views/static"
 
 app.register_blueprint(admin_controller, url_prefix="/admin")
 app.register_blueprint(history_controller)  # Register the new controller
+
 
 @app.route("/", methods=['GET'])
 def home():
@@ -30,6 +27,7 @@ def home():
         translate_to="en",
         translated="What do you want to translate?"
     )
+
 
 @app.route("/", methods=['POST'])
 def translate_text():
@@ -65,6 +63,7 @@ def translate_text():
         translated=translated_text
     )
 
+
 @app.route("/reverse", methods=['POST'])
 def reverse_translation():
     text_to_translate = request.form['text-to-translate']
@@ -98,6 +97,7 @@ def reverse_translation():
         translate_to=translate_to,
         translated=translated_text
     )
+
 
 if __name__ == "__main__":
     start_server()

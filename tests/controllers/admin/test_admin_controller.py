@@ -1,10 +1,8 @@
-# tests/controllers/admin/test_admin_controller.py
-
-import json
 from bson import ObjectId
 from models.user_model import UserModel
 from models.history_model import HistoryModel
 from datetime import datetime
+
 
 def test_history_delete(app_test):
     # Criação de um usuário admin para autenticação
