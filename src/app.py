@@ -13,7 +13,7 @@ app.template_folder = "views/templates"
 app.static_folder = "views/static"
 
 app.register_blueprint(admin_controller, url_prefix="/admin")
-app.register_blueprint(history_controller)  # Register the new controller
+app.register_blueprint(history_controller, url_prefix='/history')
 
 
 @app.route("/", methods=['GET'])
