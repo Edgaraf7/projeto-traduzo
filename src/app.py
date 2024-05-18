@@ -1,5 +1,11 @@
-from flask import Flask, request,  render_template
+# app.py
+
+from asyncio import start_server
+from datetime import datetime
+from flask import Flask, request, render_template
 from controllers.admin_controller import admin_controller
+from controllers.history_controller import history_controller  # Import the new controller
+from models.history_model import HistoryModel
 from src.models.language_model import LanguageModel
 from deep_translator import GoogleTranslator
 
@@ -11,7 +17,7 @@ app.template_folder = "views/templates"
 app.static_folder = "views/static"
 
 app.register_blueprint(admin_controller, url_prefix="/admin")
-
+app.register_blueprint(history_controller)  # Register the new controller
 
 @app.route("/", methods=['GET'])
 def home():
@@ -24,7 +30,6 @@ def home():
         translate_to="en",
         translated="What do you want to translate?"
     )
-
 
 @app.route("/", methods=['POST'])
 def translate_text():
@@ -41,6 +46,16 @@ def translate_text():
     translator = GoogleTranslator(source=translate_from, target=translate_to)
     translated_text = translator.translate(text_to_translate)
 
+    # Salva o histórico da tradução
+    history_record = HistoryModel({
+        "text": text_to_translate,
+        "translated_text": translated_text,
+        "translate_from": translate_from,
+        "translate_to": translate_to,
+        "timestamp": datetime.now()
+    })
+    history_record.save()
+
     return render_template(
         "index.html",
         languages=LanguageModel.list_dicts(),
@@ -49,7 +64,6 @@ def translate_text():
         translate_to=translate_to,
         translated=translated_text
     )
-
 
 @app.route("/reverse", methods=['POST'])
 def reverse_translation():
@@ -66,6 +80,16 @@ def reverse_translation():
 
     translate_from, translate_to = translate_to, translate_from
 
+    # Salva o histórico da tradução
+    history_record = HistoryModel({
+        "text": text_to_translate,
+        "translated_text": translated_text,
+        "translate_from": translate_from,
+        "translate_to": translate_to,
+        "timestamp": datetime.now()
+    })
+    history_record.save()
+
     return render_template(
         "index.html",
         languages=LanguageModel.list_dicts(),
@@ -74,18 +98,6 @@ def reverse_translation():
         translate_to=translate_to,
         translated=translated_text
     )
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-def start_server(host="0.0.0.0", port=8000):
-    if environ.get("FLASK_ENV") != "production":
-        return app.run(debug=True, host=host, port=port)
-    else:
-        serve(app, host=host, port=port)
-
 
 if __name__ == "__main__":
     start_server()
